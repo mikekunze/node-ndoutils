@@ -1,6 +1,6 @@
 {
     "name": "node-ndoutils",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "main": "index.js",
     "author": "Mike Kunze <mike.kunze@portalgnu.com>",
     "description": "Data Structure Wrapper for Nagios ndoutils, Uses mysql node driver as its dependency",
