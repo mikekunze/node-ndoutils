@@ -6,36 +6,55 @@ class Ndoutils
 
   connect: ()->
     @db.connect()
+    return @
 
   end: ()->
     @db.end()
+    return @
 
   getServiceDetailsByHost: (cb)->
-    @getServiceDetails (err, rows, fields)->
+    self = this
+    @getHosts (err, rows, fields)->
       if err
         console.log err
         return
 
-      if rows.length <= 0
-        cb(null, {})
-        return
-
       hosts = {}
-      for id of rows
-        if hosts[rows[id].host_display_name]
-          hosts[rows[id].host_display_name].services.push rows[id]
-        else
-          hosts[rows[id].host_display_name] = {}
-          hosts[rows[id].host_display_name].services = []
+
+      rows.forEach (row)->
+        hosts[row.display_name] = {}
+        hosts[row.display_name].current_state = row.current_state
+        hosts[row.display_name].services = []
+
+      self.getServiceDetails (err, rows, fields)->
+        if err
+          console.log err
+          return
+
+        if rows.length <= 0
+          cb(null, {})
+          return
+
+        for id of rows
           hosts[rows[id].host_display_name].services.push rows[id]
 
-      cb(null, hosts)
+        cb(null, hosts)
 
     return @
 
   getHosts: (cb)->
-    @db.connection.query "SELECT * FROM nagios_hosts", (err, rows, fields)->
+    query =  ""
+    query += "SELECT h.display_name, hs.current_state "
+
+    query += "FROM nagios_hosts h "
+    query += "  left join nagios_hoststatus hs "
+
+    query += "ON h.host_object_id = hs.host_object_id"
+
+    @db.connection.query query, (err, rows, fields)->
       cb(err, rows, fields)
+
+    return @
 
   getServices: (cb)->
     query = ""
