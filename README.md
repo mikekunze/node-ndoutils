@@ -45,6 +45,7 @@ The final datastructure looks something like this.  The "..." indicates a contin
 ```javascript
 {
   hostname1: {
+      current_state: 0
       services: [
           {
               service_current_state      : 0,
@@ -63,9 +64,11 @@ The final datastructure looks something like this.  The "..." indicates a contin
       ]
   },
   hostname2: {
+      current_state: 0
       services: [...]
   },
   hostname3: {
+      current_state: 0
       services: [...]
   },
   ...
